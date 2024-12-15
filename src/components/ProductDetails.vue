@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div
-      class="parent max-w-full w-full mx-auto lg:max-h-[720px] lg:max-w-[1330px] mt-0 pb-4 lg:my-20 flex flex-col lg:flex-row justify-center items-center gap-[30px] md:gap-[60px]"
+      class="parent max-w-full w-full mx-auto lg:max-h-[720px] lg:h-[720px] lg:max-w-[1330px] mt-0 pb-4 lg:my-20 flex flex-col lg:flex-row justify-center items-center gap-[30px] md:gap-[60px] flex-wrap overflow-hidden"
     >
       <!-- Image Gallery -->
       <div class="image-gallery w-full h-full flex-1">
@@ -31,19 +31,19 @@
           class="w-full h-full active-image"
         />
       </div>
-
+      <!-- Product Details -->
       <div
         class="product-details w-full lg:flex-1 flex flex-col justify-center items-start md:px-4"
       >
         <h2
-          class="title font-bold text-[28px] sm:text-[32px] lg:text-[40px] leading-[44px] text-[#364A63] py-2"
+          class="title font-bold text-[28px] sm:text-[32px] lg:text-[40px] leading-[44px] text-[#364A63] py-2 md:py-3"
         >
           Classy Modern Smart Watch
         </h2>
 
         <!-- Review Stars -->
         <div
-          class="packs-star py-2 flex flex-row justify-start gap-1 items-center pb-1"
+          class="packs-star flex flex-row justify-start gap-1 items-center pb-1"
         >
           <img
             src="../assets/images/star/star-fill.png"
@@ -84,24 +84,17 @@
           >
           <span
             id="main-price"
-            class="ml-1 font-normal text-2xl leading-[30px] text-[#6576FF]"
-          >
-            ${{ price }}.00</span
-          >
+            class="ml-2 font-normal text-2xl leading-[30px] text-[#6576FF]">${{ price }}</span>
         </div>
 
         <!-- type and model -->
         <div class="flex flex-row gap-10 pt-3 md:pt-5">
           <div>
-            <h5 class="font-normal text-sm leading-[23px] text-[#8091A7]">
-              Type
-            </h5>
+            <h5 class="type-text">Type</h5>
             <h3 class="font-bold text-base text-[#364A63]">Watch</h3>
           </div>
           <div>
-            <h5 class="font-normal text-sm leading-[23px] text-[#8091A7]">
-              Model Number
-            </h5>
+            <h5 class="type-text">Model Number</h5>
             <h3 class="font-bold text-base text-[#364A63]">Forerunner 290XT</h3>
           </div>
         </div>
@@ -121,7 +114,6 @@
             Band Color
           </div>
           <!-- Color Picker -->
-
           <div id="color-picker" class="flex gap-6 pt-4 pb-2">
             <div
               v-for="color in colors"
@@ -150,10 +142,10 @@
                 'size-option',
                 { 'active-size': selectedSize.price === size.price },
               ]"
-              class="w-[73px] h-[36px] px-4 py-2 border rounded-md cursor-pointer flex justify-center items-center"
+              class="size-option"
               @click="updateSize(size)"
             >
-              {{ size.price }}
+            <span class="size-name">{{ size.name }}</span><span class="size-price">${{ size.price }}</span>
             </div>
           </div>
         </div>
@@ -165,21 +157,16 @@
       id="checkout-button"
       class="sticky-footer max-w-full mx-auto lg:max-w-[1330px] w-full flex justify-center"
     >
-      <div class="flex justify-center mt-4">
-        <button
-          @click="openCheckoutModal"
-          class="flex items-center justify-center gap-[10px] px-6 py-2 rounded-[20px] bg-[#FFBB5A] shadow-[0_0_15px_5px_rgba(0,0,0,0.1)"
+      <button @click="openCheckoutModal" class="custom-button mt-4 md:m-0">
+        <span
+          class="checkout-text text-[#364A63] font-roboto font-bold text-sm leading-[20px] tracking-[0.26px]"
+          >Checkout</span
         >
-          <span
-            class="checkout-text text-[#364A63] font-roboto font-bold text-sm leading-[20px] tracking-[0.26px]"
-            >Checkout</span
-          >
-          <span
-            class="cart-badge flex items-center justify-center w-[19px] h-[20px] px-1.5 py-0.5 rounded-[5px] bg-white text-[#364A63] font-roboto font-bold text-xs leading-[16px] tracking-[0.26px]"
-            >2</span
-          >
-        </button>
-      </div>
+        <span
+          class="cart-badge flex items-center justify-center w-[19px] h-[20px] px-1.5 py-0.5 rounded-[5px] bg-white text-[#364A63] font-roboto font-bold text-xs leading-[16px] tracking-[0.26px]"
+          >2</span
+        >
+      </button>
     </div>
   </div>
 </template>
@@ -194,20 +181,20 @@ const colors = [
   { name: "Black", hex: "#3B4747" },
 ];
 
-const sizes = [{ price: 69 }, { price: 79 }, { price: 89 }, { price: 99 }];
+const sizes = [{ name: 'S', price: 69 }, { name: 'M', price: 79 }, { name: 'L' , price: 89 }, { name: 'XL', price: 99 }];
 
-const price = ref(79);
+const price = ref(sizes[1].price.toFixed(2));
 const selectedSize = ref(sizes[1]);
 const selectedColor = ref("Purple");
 
 const updateColor = (color) => {
   selectedColor.value = color.name;
-  console.log(`Selected color: ${color.name}`);
 };
 
 const updateSize = (size) => {
   selectedSize.value = size;
-  price.value = size.price;
+  price.value = Number(size.price).toFixed(2);
+  console.log("price.value",price.value)
 };
 
 const openCheckoutModal = () => {
@@ -217,16 +204,6 @@ const openCheckoutModal = () => {
 </script>
 
 <style scoped>
-.main-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
-  transition: padding-right 0.2s ease-in-out;
-}
 .color-circle.ring-2 {
   border-width: 2px;
 }
@@ -251,8 +228,20 @@ const openCheckoutModal = () => {
   --tw-ring-color: #3b4747;
 }
 
-.size-option.active-size {
-  background-color: #6576ff;
-  color: white;
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .image-gallery {
+    display: flex;
+    align-items: center;
+  }
+  .image-gallery img {
+    height: auto !important;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px){
+  .image-gallery img {
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
 }
 </style>
