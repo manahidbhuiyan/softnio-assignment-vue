@@ -151,9 +151,11 @@
 </template>
 
 <script setup>
+import { useToast } from 'vue-toastification';
 import { ref, computed } from 'vue';
 import { useStore } from 'vuex';
 
+const toast = useToast();
 const store = useStore();
 const quantity = ref(0);
 const selectedColor = ref("Purple");
@@ -184,7 +186,8 @@ const decreaseQuantity = () => {
 };
 
 const addToCart = () => {
-  const productData = {
+  if(quantity.value > 0){
+    const productData = {
     id: product.value.id,
     title: product.value.title,
     color: selectedColor.value,
@@ -195,6 +198,10 @@ const addToCart = () => {
 
   store.commit('addToCart', productData);
   quantity.value = 0; 
+  }else{
+    toast.error('You need to add minimum 1 quantity.');
+    
+  }
 };
 
 const cartTotalQuantity = computed(() => cart.value.reduce((total, item) => total + item.quantity, 0));
